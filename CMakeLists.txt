@@ -4,10 +4,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/lib")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(tinyify VERSION 1.0.0 LANGUAGES CXX)
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
-add_executable(${PROJECT_NAME} ${SOURCES})
+file(GLOB_RECURSE HEADERS include/*.hpp)
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 include(FetchContent)
 FetchContent_Declare(
@@ -57,4 +59,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     imgui
 )
-target_include_directories(${PROJECT_NAME} PRIVATE include/)
+target_include_directories(${PROJECT_NAME} PRIVATE include/ thirdparty/)

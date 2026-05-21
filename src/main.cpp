@@ -74,11 +74,13 @@ int main() {
             float titleX = (ImGui::GetWindowSize().x / 2) - (ImGui::CalcTextSize(title.c_str()).x / 2);
             ImGui::Text(title.c_str());
             
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 20));
             ImGui::Separator();
 
             if (ImGui::Button("hi there")) {
                 Logging::info("hi there");
             }
+            ImGui::PopStyleVar();
 
             ImGui::EndChild();
 
