@@ -16,12 +16,21 @@ int main() {
     }
 
     float mainScale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    if (!SDL_CreateWindowAndRenderer("tinyify", 1280, 720, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
-        Logging::error("Couldnt create window or renderer: {}", SDL_GetError());
+    window = SDL_CreateWindow("tinyify", 1280, 720, SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        Logging::error("Couldn't create window: {}", SDL_GetError());
         return 1;
     }
 
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetPointerProperty(props, SDL_PROP_RENDERER_CREATE_WINDOW_POINTER, window);
+    SDL_SetNumberProperty(props, SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER, 1);
+    renderer = SDL_CreateRendererWithProperties(props);
+
+    SDL_DestroyProperties(props);
+
     SDL_SetRenderLogicalPresentation(renderer, 1280, 720, SDL_LOGICAL_PRESENTATION_DISABLED);
+    SDL_SetRenderVSync(renderer, SDL_RENDERER_VSYNC_ADAPTIVE);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -39,13 +48,15 @@ int main() {
     SDL_Event event;
     bool running = true;
     while (running) {
-        while (SDL_PollEvent(&event)) {
-            ImGui_ImplSDL3_ProcessEvent(&event);
-            switch (event.type) {
-                case SDL_EVENT_QUIT:
-                    running = false;
-                    break;
-            }
+        if (SDL_WaitEvent(&event)) {
+            do {
+                ImGui_ImplSDL3_ProcessEvent(&event);
+                switch (event.type) {
+                    case SDL_EVENT_QUIT:
+                        running = false;
+                        break;
+                }
+            } while (SDL_PollEvent(&event));
         }
 
         ImGui_ImplSDLRenderer3_NewFrame();
@@ -57,13 +68,17 @@ int main() {
         ImVec2 windowSize(w, h);
         UIHelper::createPanel("MainPanel", windowSize, ImVec2(0, 0), [windowSize]() {
             ImGui::SetCursorPos(ImVec2(0, 0));
-            ImGui::BeginChild("MainPanelChildren", windowSize, true, UIHelper::DEFAULT_WINDOW_FLAGS | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoInputs);
+            ImGui::BeginChild("MainPanelChildren", windowSize, true, UIHelper::DEFAULT_WINDOW_FLAGS | ImGuiWindowFlags_NoScrollWithMouse);
 
             std::string title = "tinyify";
             float titleX = (ImGui::GetWindowSize().x / 2) - (ImGui::CalcTextSize(title.c_str()).x / 2);
             ImGui::Text(title.c_str());
             
             ImGui::Separator();
+
+            if (ImGui::Button("hi there")) {
+                Logging::info("hi there");
+            }
 
             ImGui::EndChild();
 
