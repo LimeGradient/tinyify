@@ -27,6 +27,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(curlcpp)
 
 FetchContent_Declare(
+    crowcpp
+    GIT_REPOSITORY https://github.com/crowcpp/crow
+    GIT_TAG v1.3.2
+)
+FetchContent_MakeAvailable(crowcpp)
+
+FetchContent_Declare(
     nlohmann_json
     GIT_REPOSITORY https://github.com/nlohmann/json
     GIT_TAG v3.12.0
@@ -56,7 +63,11 @@ target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     SDL3::SDL3
     curlcpp
+    crow::crow
     nlohmann_json::nlohmann_json
     imgui
 )
-target_include_directories(${PROJECT_NAME} PRIVATE include/ thirdparty/)
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    include/ 
+    thirdparty/
+)

@@ -45,6 +45,8 @@ int main() {
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
 
+    UIHelper::loadImageFromURL("https://images4.alphacoders.com/944/thumb-1920-944632.jpg", renderer, ImVec2(100, 100));
+
     SDL_Event event;
     bool running = true;
     while (running) {
@@ -80,6 +82,8 @@ int main() {
             if (ImGui::Button("hi there")) {
                 Logging::info("hi there");
             }
+
+            UIHelper::renderImages();
             ImGui::PopStyleVar();
 
             ImGui::EndChild();
