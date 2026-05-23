@@ -7,6 +7,7 @@
 #include "Util/WebManager.hpp"
 
 std::vector<Image> UIHelper::images;
+SDL_Renderer* UIHelper::renderer;
 
 bool UIHelper::loadTextureFromMemory(const void* data, size_t data_size, SDL_Renderer* renderer, SDL_Texture** out_texture, int* out_width, int* out_height) {
     int image_width = 0;
@@ -55,10 +56,10 @@ bool UIHelper::loadTextureFromFile(const char* file_name, SDL_Renderer* renderer
     return ret;
 }
 
-void UIHelper::loadImageFromPath(std::string imagePath, SDL_Renderer* renderer, ImVec2 imgSize) {
+void UIHelper::loadImageFromPath(std::string imagePath, ImVec2 imgSize) {
     SDL_Texture* texture;
     int w, h;
-    bool ret = loadTextureFromFile(imagePath.c_str(), renderer, &texture, &w, &h);
+    bool ret = loadTextureFromFile(imagePath.c_str(), UIHelper::renderer, &texture, &w, &h);
     IM_ASSERT(ret);
 
     int id = 0;
@@ -74,12 +75,12 @@ void UIHelper::loadImageFromPath(std::string imagePath, SDL_Renderer* renderer, 
     ));
 }
 
-void UIHelper::loadImageFromURL(std::string url, SDL_Renderer* renderer, ImVec2 imgSize) {
+void UIHelper::loadImageFromURL(std::string url, ImVec2 imgSize) {
     WebManager::ImageBuffer buffer;
     if (WebManager::get().fetchImage(url, buffer)) {
         SDL_Texture* texture;
         int w, h;
-        bool ret = loadTextureFromMemory(buffer.data.data(), buffer.data.size(), renderer, &texture, &w, &h);
+        bool ret = loadTextureFromMemory(buffer.data.data(), buffer.data.size(), UIHelper::renderer, &texture, &w, &h);
         IM_ASSERT(ret);
 
         int id = 0;
@@ -96,8 +97,45 @@ void UIHelper::loadImageFromURL(std::string url, SDL_Renderer* renderer, ImVec2 
     }
 }
 
+void UIHelper::loadImageFromMetadata(TagLib::ByteVector data, ImVec2 imgSize) {
+    int width, height, channels;
+    unsigned char* imgData = stbi_load_from_memory(
+        reinterpret_cast<unsigned char*>(data.data()),
+        data.size(),
+        &width, &height, &channels, 4
+    );
+
+    if (imgData) {
+        SDL_Surface* surface = SDL_CreateSurfaceFrom(
+            width, height, SDL_PIXELFORMAT_RGBA32, imgData, width * 4
+        );
+
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_DestroySurface(surface);
+        stbi_image_free(imgData);
+
+        int id = 0;
+        if (!images.empty()) {
+            id = images.back().id + 1;
+        }
+
+        images.push_back(Image(
+            id,
+            (imgSize.x > 0) ? imgSize.x : width,
+            (imgSize.y > 0) ? imgSize.y : height,
+            texture
+        ));
+    }
+}
+
 void UIHelper::renderImages() {
     for (auto image : images) {
         ImGui::Image((ImTextureID)(intptr_t)image.texture, ImVec2((float)image.width, (float)image.height));
+    }
+}
+
+void UIHelper::prepareAudioFileImages(std::vector<AudioMetadata> files, ImVec2 imgSize) {
+    for (auto file : files) {
+        loadImageFromMetadata(file.tagAlbumCover);
     }
 }

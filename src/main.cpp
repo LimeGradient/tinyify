@@ -4,6 +4,7 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_sdlrenderer3.h>
 
+#include "Services/LocalFilesService.hpp"
 #include "Util/Logging.hpp"
 #include "UI/UIHelper.hpp"
 
@@ -26,7 +27,7 @@ int main() {
     SDL_SetPointerProperty(props, SDL_PROP_RENDERER_CREATE_WINDOW_POINTER, window);
     SDL_SetNumberProperty(props, SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER, 1);
     renderer = SDL_CreateRendererWithProperties(props);
-
+    UIHelper::setRenderer(renderer);
     SDL_DestroyProperties(props);
 
     SDL_SetRenderLogicalPresentation(renderer, 1280, 720, SDL_LOGICAL_PRESENTATION_DISABLED);
@@ -45,7 +46,10 @@ int main() {
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
 
-    UIHelper::loadImageFromURL("https://images4.alphacoders.com/944/thumb-1920-944632.jpg", renderer, ImVec2(100, 100));
+    LocalFilesService::get()->init();
+    UIHelper::prepareAudioFileImages(LocalFilesService::get()->getAudioFiles());
+
+    UIHelper::loadImageFromURL("https://images4.alphacoders.com/944/thumb-1920-944632.jpg", ImVec2(100, 100));
 
     SDL_Event event;
     bool running = true;

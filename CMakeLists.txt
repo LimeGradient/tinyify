@@ -26,6 +26,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(curlcpp)
 
+find_package(asio CONFIG REQUIRED)
 FetchContent_Declare(
     crowcpp
     GIT_REPOSITORY https://github.com/crowcpp/crow
@@ -39,6 +40,8 @@ FetchContent_Declare(
     GIT_TAG v3.12.0
 )
 FetchContent_MakeAvailable(nlohmann_json)
+
+find_package(TagLib CONFIG REQUIRED)
 
 FetchContent_Declare(
     imgui
@@ -63,8 +66,10 @@ target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     SDL3::SDL3
     curlcpp
-    crow::crow
+    asio::asio
+    Crow::Crow
     nlohmann_json::nlohmann_json
+    TagLib::tag
     imgui
 )
 target_include_directories(${PROJECT_NAME} PRIVATE 
