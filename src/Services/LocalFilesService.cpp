@@ -29,14 +29,6 @@ bool LocalFilesService::init() {
                 imageData = frame->picture();
             }
         }
-
-        /* std::vector<unsigned char> imageDataRaw;
-        if (!imageData.isEmpty()) {
-            imageDataRaw = std::vector<unsigned char>(
-            reinterpret_cast<const unsigned char*>(imageData.data()),
-            reinterpret_cast<const unsigned char*>(imageData.data()) + imageData.size()
-            );
-        } */
         
         audioFiles.push_back(AudioMetadata(
             std::string(audioFile.tag()->title().toCString()),
@@ -47,4 +39,18 @@ bool LocalFilesService::init() {
     }
 
     return true;
+}
+
+void LocalFilesService::loadMusicCells() {
+    for (auto file : audioFiles) {
+        musicCells.push_back(MusicCell(
+            file
+        ));
+    }
+}
+
+void LocalFilesService::renderMusicCells() {
+    for (auto cell : musicCells) {
+        cell.render();
+    }
 }

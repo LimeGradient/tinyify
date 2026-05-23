@@ -47,7 +47,7 @@ int main() {
     ImGui_ImplSDLRenderer3_Init(renderer);
 
     LocalFilesService::get()->init();
-    UIHelper::prepareAudioFileImages(LocalFilesService::get()->getAudioFiles());
+    LocalFilesService::get()->loadMusicCells();
 
     UIHelper::loadImageFromURL("https://images4.alphacoders.com/944/thumb-1920-944632.jpg", ImVec2(100, 100));
 
@@ -86,6 +86,8 @@ int main() {
             if (ImGui::Button("hi there")) {
                 Logging::info("hi there");
             }
+
+            LocalFilesService::get()->renderMusicCells();
 
             UIHelper::renderImages();
             ImGui::PopStyleVar();

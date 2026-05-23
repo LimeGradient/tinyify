@@ -9,6 +9,23 @@
 std::vector<Image> UIHelper::images;
 SDL_Renderer* UIHelper::renderer;
 
+MusicCell UIHelper::createMusicCell(AudioMetadata audioMetadata) {
+    ImVec2 windowSize = ImGui::GetWindowSize();
+
+    ImGui::BeginChild(audioMetadata.title.c_str(), ImVec2(windowSize.x - 10, 150));
+
+    if (!audioMetadata.tagAlbumCover.isEmpty()) {
+        auto image = UIHelper::loadImageFromMetadata(audioMetadata.tagAlbumCover);
+        ImGui::Image((ImTextureID)(intptr_t)image.texture, ImVec2(150, 150));
+    }
+
+    ImGui::SameLine();
+
+    ImGui::Text(audioMetadata.title.c_str());
+
+    ImGui::EndChild();
+}
+
 bool UIHelper::loadTextureFromMemory(const void* data, size_t data_size, SDL_Renderer* renderer, SDL_Texture** out_texture, int* out_width, int* out_height) {
     int image_width = 0;
     int image_height = 0;
@@ -97,7 +114,7 @@ void UIHelper::loadImageFromURL(std::string url, ImVec2 imgSize) {
     }
 }
 
-void UIHelper::loadImageFromMetadata(TagLib::ByteVector data, ImVec2 imgSize) {
+Image UIHelper::loadImageFromMetadata(TagLib::ByteVector data, ImVec2 imgSize) {
     int width, height, channels;
     unsigned char* imgData = stbi_load_from_memory(
         reinterpret_cast<unsigned char*>(data.data()),
@@ -111,31 +128,23 @@ void UIHelper::loadImageFromMetadata(TagLib::ByteVector data, ImVec2 imgSize) {
         );
 
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_DestroySurface(surface);
-        stbi_image_free(imgData);
 
-        int id = 0;
-        if (!images.empty()) {
-            id = images.back().id + 1;
-        }
-
-        images.push_back(Image(
-            id,
+        Image image(
+            0,
             (imgSize.x > 0) ? imgSize.x : width,
             (imgSize.y > 0) ? imgSize.y : height,
             texture
-        ));
+        );
+
+        SDL_DestroySurface(surface);
+        stbi_image_free(imgData);
+
+        return image;
     }
 }
 
 void UIHelper::renderImages() {
     for (auto image : images) {
         ImGui::Image((ImTextureID)(intptr_t)image.texture, ImVec2((float)image.width, (float)image.height));
-    }
-}
-
-void UIHelper::prepareAudioFileImages(std::vector<AudioMetadata> files, ImVec2 imgSize) {
-    for (auto file : files) {
-        loadImageFromMetadata(file.tagAlbumCover);
     }
 }

@@ -8,6 +8,7 @@
 
 class AudioMetadata {
 public:
+    AudioMetadata() = default;
     AudioMetadata(std::string title, std::string albumName, std::string artists, std::vector<unsigned char> albumCover)
         : title(title), albumName(albumName), artists(artists), albumCover(albumCover) {}
     
