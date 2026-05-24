@@ -74,7 +74,7 @@ int main() {
         ImVec2 windowSize(w, h);
         UIHelper::createPanel("MainPanel", windowSize, ImVec2(0, 0), [windowSize]() {
             ImGui::SetCursorPos(ImVec2(0, 0));
-            ImGui::BeginChild("MainPanelChildren", windowSize, true, UIHelper::DEFAULT_WINDOW_FLAGS | ImGuiWindowFlags_NoScrollWithMouse);
+            ImGui::BeginChild("MainPanelChildren", windowSize, true, UIHelper::DEFAULT_WINDOW_FLAGS);
 
             std::string title = "tinyify";
             float titleX = (ImGui::GetWindowSize().x / 2) - (ImGui::CalcTextSize(title.c_str()).x / 2);
@@ -86,10 +86,13 @@ int main() {
             if (ImGui::Button("hi there")) {
                 Logging::info("hi there");
             }
+            
+            ImGui::BeginChild("MainPanelMusicCells", ImVec2(windowSize.x - 20, windowSize.y - 95), true, UIHelper::DEFAULT_WINDOW_FLAGS);
 
             LocalFilesService::get()->renderMusicCells();
 
-            UIHelper::renderImages();
+            ImGui::EndChild();
+
             ImGui::PopStyleVar();
 
             ImGui::EndChild();
