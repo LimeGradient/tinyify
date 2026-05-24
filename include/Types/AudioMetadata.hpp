@@ -4,8 +4,6 @@
 #include <vector>
 #include <taglib/tbytevector.h>
 
-#include "Image.hpp"
-
 class AudioMetadata {
 public:
     AudioMetadata() = default;

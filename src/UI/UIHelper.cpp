@@ -4,6 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "Util/Logging.hpp"
 #include "Util/WebManager.hpp"
 
 std::vector<Image> UIHelper::images;
@@ -73,7 +74,7 @@ bool UIHelper::loadTextureFromFile(const char* file_name, SDL_Renderer* renderer
     return ret;
 }
 
-void UIHelper::loadImageFromPath(std::string imagePath, ImVec2 imgSize) {
+Image UIHelper::loadImageFromPath(std::string imagePath, ImVec2 imgSize) {
     SDL_Texture* texture;
     int w, h;
     bool ret = loadTextureFromFile(imagePath.c_str(), UIHelper::renderer, &texture, &w, &h);
@@ -84,15 +85,16 @@ void UIHelper::loadImageFromPath(std::string imagePath, ImVec2 imgSize) {
         id = images.back().id + 1;
     }
 
-    images.push_back(Image(
+    Image image = Image(
         id,
         (imgSize.x > 0) ? imgSize.x : w,
         (imgSize.y > 0) ? imgSize.y : h,
         texture    
-    ));
+    );
+    return image;
 }
 
-void UIHelper::loadImageFromURL(std::string url, ImVec2 imgSize) {
+Image UIHelper::loadImageFromURL(std::string url, ImVec2 imgSize) {
     WebManager::ImageBuffer buffer;
     if (WebManager::get().fetchImage(url, buffer)) {
         SDL_Texture* texture;
@@ -105,12 +107,13 @@ void UIHelper::loadImageFromURL(std::string url, ImVec2 imgSize) {
             id = images.back().id + 1;
         }
 
-        images.push_back(Image(
+        Image image = Image(
             id,
             (imgSize.x > 0) ? imgSize.x : w,
             (imgSize.y > 0) ? imgSize.y : h,
             texture    
-        ));
+        );
+        return image;
     }
 }
 

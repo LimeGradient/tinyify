@@ -82,10 +82,6 @@ int main() {
             
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 20));
             ImGui::Separator();
-
-            if (ImGui::Button("hi there")) {
-                Logging::info("hi there");
-            }
             
             ImGui::BeginChild("MainPanelMusicCells", ImVec2(windowSize.x - 20, windowSize.y - 95), true, UIHelper::DEFAULT_WINDOW_FLAGS);
 
@@ -94,7 +90,6 @@ int main() {
             ImGui::EndChild();
 
             ImGui::PopStyleVar();
-
             ImGui::EndChild();
 
         }, UIHelper::DEFAULT_WINDOW_FLAGS | ImGuiWindowFlags_NoInputs);

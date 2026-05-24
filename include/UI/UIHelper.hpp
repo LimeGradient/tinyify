@@ -11,7 +11,6 @@
 #include "Types/AudioMetadata.hpp"
 #include "Types/Image.hpp"
 #include "Types/MusicCell.hpp"
-#include "Util/Logging.hpp"
 
 class UIHelper {
 public:
@@ -38,8 +37,8 @@ public:
 
     static MusicCell createMusicCell(AudioMetadata audioMetadata);
 
-    static void loadImageFromPath(std::string imagePath, ImVec2 imgSize = ImVec2(0, 0));
-    static void loadImageFromURL(std::string url, ImVec2 imgSize = ImVec2(0, 0));
+    static Image loadImageFromPath(std::string imagePath, ImVec2 imgSize = ImVec2(0, 0));
+    static Image loadImageFromURL(std::string url, ImVec2 imgSize = ImVec2(0, 0));
     static Image loadImageFromMetadata(TagLib::ByteVector data, ImVec2 imgSize = ImVec2(0, 0));
     static void renderImages();
     static void prepareAudioFileImages(std::vector<AudioMetadata> files, ImVec2 imgSize = ImVec2(0, 0));

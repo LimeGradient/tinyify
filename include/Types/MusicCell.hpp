@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types/AudioMetadata.hpp"
+#include "Types/Image.hpp"
 
 class MusicCell {
 public:
