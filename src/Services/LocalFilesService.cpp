@@ -30,8 +30,12 @@ bool LocalFilesService::init() {
             }
         }
         
+        std::string title = audioFile.tag()->title().toCString();
+        title.erase(0, title.find_first_not_of(" \t\n\r\f\v"));
+        
         audioFiles.push_back(AudioMetadata(
-            std::string(audioFile.tag()->title().toCString()),
+            file.path().string(),
+            title,
             std::string(audioFile.tag()->album().toCString()),
             std::string(audioFile.tag()->artist().toCString()),
             imageData

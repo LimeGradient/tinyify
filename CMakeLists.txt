@@ -20,6 +20,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SDL3)
 
 FetchContent_Declare(
+    SDL3_mixer
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer
+    GIT_TAG release-3.2.0
+)
+FetchContent_MakeAvailable(SDL3_mixer)
+
+FetchContent_Declare(
     curlcpp
     GIT_REPOSITORY https://github.com/JosephP91/curlcpp
     GIT_TAG master
@@ -65,6 +72,7 @@ target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     SDL3::SDL3
+    SDL3_mixer::SDL3_mixer
     curlcpp
     asio::asio
     Crow::Crow
